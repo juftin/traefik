@@ -178,7 +178,7 @@ services:
             DEFAULT_ACTION:                 auth
             DEFAULT_PROVIDER:               google
         networks:
-            traefik: null
+            reverse-proxy: null
         restart:        ${UNIVERSAL_RESTART_POLICY}
         depends_on:
             - duckdns
