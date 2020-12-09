@@ -1,2 +1,4 @@
 .env
 .idea/*
+traefik/logs/*
+traefik/acme/acme.json
