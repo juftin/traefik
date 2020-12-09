@@ -9,6 +9,8 @@ networks:
         driver: bridge
     socket-proxy:
         driver: bridge
+    internal:
+        driver: bridge
 
 ################################################################################
 # SERVICES CONFIGURATION
