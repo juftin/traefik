@@ -19,6 +19,8 @@ given the proper labels are applied.
         -   [.env](#env)
         -   [acme.json](#acmejson)
 -   [Usage](#usage)
+    - [Jupyter Example](#jupyter-example)
+    - [Local Usage](#local-usage)
 * * *
 
 * * *
@@ -77,7 +79,7 @@ mkdir -p traefik/acme/ && \
 
 ## Usage
 
-Jupyter Example:
+### Jupyter Example:
 
 The below example allows the jupyter container to speak to the `traefik_reverse-proxy` (the 
 external netwok created by this *compose* configuration). Apart from the networking, everything 
@@ -118,7 +120,18 @@ services:
 - `traefik.http.routers.jupyter-rtr.middlewares:`              
     - Instructs the router to use the middleware service, 
     "[chain-oauth-google@file](traefik/rules/middlewares-chains.yml)",
-    which requires Google Oauth for access 
+    which requires Google OAuth for access 
+
+### Local Usage
+
+Check out the [local](https://github.com/juftin/traefik/blob/local/docker-compose.yml)
+branch of this repository for a configuration that supports using a local reverse proxy. 
+
+Most importantly, for the above example, the `traefik.http.routers.jupyter-rtr.entrypoints` would 
+be set to `http` (since we will not be using SSL locally), and the `traefik.http.routers.jupyter-rtr.middlewares`
+value can be set to "[chain-local-testing@file](traefik/rules/middlewares-chains.yml)"
+to bypass Google OAuth.
+
 
 * * *
 
