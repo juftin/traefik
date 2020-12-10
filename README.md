@@ -1,13 +1,16 @@
 # Traefik
 
-<p align="center">
-  <img src="docs/static/juftin.png" width="250" height="250"  alt="juftin logo">
+<p align="left">
+  <img src="docs/static/juftin.png" width="125" height="125"  alt="juftin logo">
 </p>
 
-Media and home server stack.  It's a docker-compose project built
-around Plex, including schedulers/orchestrators for TV / Movie downloads, 
-an always behind VPN torrenting webserver, and a site for users to request new downloads. 
-SSL and a GoogleOAuth whitelist are built in as well.
+<p align="right">
+  <img src="https://github.com/traefik/traefik/raw/master/docs/content/assets/img/traefik.logo.png" width="150" alt="traefik logo">
+</p>
+
+Hosted Reverse Proxy with Google OAuth for operating a webserver
+from home. This reverse-proxy automatically picks up new docker services
+given the proper labels are applied.
 
 
 -   [Configuration](#configuration)
@@ -18,6 +21,7 @@ SSL and a GoogleOAuth whitelist are built in as well.
     -   [File Configuration](#file-configuration)
         -   [.env](#env)
         -   [acme.json](#acmejson)
+-   [Usage](#usage)
 * * *
 
 * * *
@@ -73,6 +77,53 @@ mkdir -p traefik/acme/ && \
   touch traefik/acme/acme.json && \
   chmod 600 traefik/acme/acme.json
 ```
+
+## Usage
+
+Jupyter Example:
+
+The below example allows the jupyter container to speak to the `traefik_reverse-proxy` (the 
+external netwok created by this *compose* configuration). Apart from the networking, everything 
+else is performed with the labels.
+
+```yaml
+version: '3.7'
+networks:
+    traefik:
+        external:
+            name: traefik_reverse-proxy
+services:
+    jupyter:
+        container_name: jupyter
+        image: jupyter/all-spark-notebook:latest
+        networks:
+            traefik: null
+        command:        start.sh jupyter lab
+        labels:
+            traefik.enable:                                             true
+            traefik.http.routers.jupyter-rtr.rule:                      Host(`jupyter.${DOMAIN_NAME}`)
+            traefik.http.routers.jupyter-rtr.service:                   jupyter-svc
+            traefik.http.services.jupyter-svc.loadbalancer.server.port: 8888
+            traefik.http.routers.jupyter-rtr.entrypoints:               https
+            traefik.http.routers.jupyter-rtr.middlewares:               chain-oauth-google@file
+```
+
+- `traefik.enable`
+    - Allows Traefik to interact with this application 
+- `traefik.http.routers.jupyter-rtr.rule`
+    - Creates a router, "jupyter-rtr", that can be accessed @ jupyter.example.com
+- `traefik.http.routers.jupyter-rtr.service`
+    - Attaches a load balancing service, "jupyter-svc",to the router
+- `traefik.http.services.jupyter-svc.loadbalancer.server.port`
+    - Instructs the load balancer to operate on port 8888 (the exposed port of the application)
+- `traefik.http.routers.jupyter-rtr.entrypoints`
+    - Instructs the router to use the "https" entrypoint (https://jupyter.example.com)
+- `traefik.http.routers.jupyter-rtr.middlewares:`              
+    - Instructs the router to use the middleware service, 
+    "[chain-oauth-google@file](traefik/rules/middlewares-chains.yml)",
+    which requires Google Oauth for access 
+
+* * *
 
 * * *
 
