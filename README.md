@@ -2,9 +2,6 @@
 
 <p align="left">
   <img src="docs/static/juftin.png" width="125" height="125"  alt="juftin logo">
-</p>
-
-<p align="right">
   <img src="https://github.com/traefik/traefik/raw/master/docs/content/assets/img/traefik.logo.png" width="150" alt="traefik logo">
 </p>
 
