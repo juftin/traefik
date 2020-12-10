@@ -25,7 +25,7 @@ services:
     ####################################
 
     traefik:
-        container_name: traefik
+        container_name: traefik-localhost
         image:          library/traefik:v2.3
         hostname:       ${TRAEFIK_SUBDOMAIN}
         ports:
@@ -74,15 +74,15 @@ services:
             - --providers.file.directory=/rules
             - --providers.file.watch=true
             # ENTRYPOINTS
-            - --entryPoints.web.address=:80
-            - --entryPoints.websecure.address=:443
+            - --entryPoints.http.address=:80
+            - --entryPoints.https.address=:443
             - --entryPoints.traefik.address=:8080
             # TESTING SETTINGS (COMMENTED OUT BY DEFAULT)
             - -api.insecure=true
         labels:
             traefik.enable:                               true
-            traefik.http.routers.traefik-rtr.rule:        Host(`${TRAEFIK_SUBDOMAIN}.${DOMAIN_NAME}`)
-            traefik.http.routers.traefik-rtr.entrypoints: web
+            traefik.http.routers.traefik-rtr.rule:        Host(`${TRAEFIK_SUBDOMAIN}.localhost`)
+            traefik.http.routers.traefik-rtr.entrypoints: http
             traefik.http.routers.traefik-rtr.service:     api@internal
 
     ####################################
