@@ -9,7 +9,6 @@ Hosted Reverse Proxy with Google OAuth for operating a webserver
 from home. This reverse-proxy automatically picks up new docker services
 given the proper labels are applied.
 
-
 -   [Configuration](#configuration)
     -   [Port Forwarding](#port-forwarding)
     -   [CloudFlare](#cloudflare)
@@ -21,9 +20,16 @@ given the proper labels are applied.
 -   [Usage](#usage)
     - [Jupyter Example](#jupyter-example)
     - [Local Usage](#local-usage)
+
 * * *
 
 * * *
+
+### ❗️ Important Notice ❗
+
+This docker-compose application stack is meant to host a website online using 
+cloudflare as a DNS provider. Separately, this repository has a [local](https://github.com/juftin/traefik/tree/local)
+branch used for running a reverse Proxy locally (i.e. `http://jupyter.localhost/`)
 
 ## Configuration
 
@@ -82,7 +88,8 @@ mkdir -p traefik/acme/ && \
 ### Jupyter Example:
 
 The below example allows the jupyter container to speak to the `traefik_reverse-proxy` (the 
-external netwok created by this *compose* configuration). Apart from the networking, everything 
+external network created by this *compose* configuration - notice the docker-compose 
+project name added before the network name). Apart from the networking, everything 
 else is performed with the labels.
 
 ```yaml
@@ -132,6 +139,49 @@ be set to `http` (since we will not be using SSL locally), and the `traefik.http
 value can be set to "[chain-local-testing@file](traefik/rules/middlewares-chains.yml)"
 to bypass Google OAuth.
 
+# Containers
+
+-   [traefik](#traefik)
+-   [oauth](#oauth)
+-   [duckdns](#duckdns)
+
+## traefik
+
+[Docker Hub](https://hub.docker.com/_/traefik) \|\|
+[GitHub](https://github.com/containous/traefik) \|\|
+[Website](https://traefik.io/) \|\|
+[Documentation](https://docs.traefik.io/)
+
+<img src="docs/static/traefik_logo.png" width="300" alt="traefik Logo">
+
+Traefik (pronounced traffic) is a modern HTTP reverse proxy 
+and load balancer that makes deploying microservices easy. 
+Traefik integrates with your existing infrastructure components 
+(Docker, Swarm mode, Kubernetes, Marathon, Consul, Etcd, Rancher, Amazon ECS, ...) 
+and configures itself automatically and dynamically. Pointing Traefik 
+at your orchestrator should be the only configuration step you need.
+
+## oauth
+
+[Docker Hub](https://hub.docker.com/r/thomseddon/traefik-forward-auth) \|\|
+[GitHub](https://github.com/thomseddon/traefik-forward-auth)
+
+<img src="docs/static/oauth2.png" width="250" alt="oauth">
+
+A minimal forward authentication service that provides Google oauth based 
+login and authentication for the traefik reverse proxy/load balancer.
+
+## duckdns
+
+[Docker Hub](https://hub.docker.com/r/linuxserver/duckdns/) \|\|
+[GitHub](https://github.com/linuxserver/docker-duckdns) \|\|
+[Website](https://www.duckdns.org)
+
+<img src="docs/static/duckdns.jpg" width="250" alt="duckdns">
+
+Duckdns is a free service which will point a DNS (sub domains of duckdns.org) 
+to an IP of your choice. The service is completely free, and doesn't 
+require reactivation or forum posts to maintain its existence.
 
 * * *
 
